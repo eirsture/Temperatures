@@ -28,7 +28,12 @@ while i < 5:
         newDate = datetime.today()
         print("Temperature", temp)
         if oldDate.minute != newDate.minute:
-            print("Minute passed", readings)
+            average = 0
+            for reading in readings:
+                average += reading
+            average = average/len(readings)
+            print("Minute passed" + " Readings " + readings + " Average: " + average)
+            readings = []
             oldDate = newDate
             newDate = None
             i += 1
