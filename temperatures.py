@@ -7,6 +7,14 @@ in a Cloud Firestore provided by Google Firebase.
 import serial, time
 from datetime import datetime
 
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+cred = credentials.Certificate("path/to/serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
+
 # The port that the arduino can be reached/read at
 port = '/dev/ttyUSB0'
 
@@ -35,6 +43,11 @@ while i < 5:
             print("Minute passed")
             print("Average: ", average)
             print("Readings: ", readings)
+            doc_ref = db.collection(u'temperatures').document()
+            doc_ref.set({
+                u'temperature': u'{}'.format(temp),
+                u'date': u'{}'.format(oldDate)
+            })
             readings = [temp]
             oldDate = newDate
             newDate = None
