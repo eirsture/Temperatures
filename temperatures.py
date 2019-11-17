@@ -11,15 +11,27 @@ from datetime import datetime
 port = '/dev/ttyUSB0'
 
 # Enables reading the serial signal
-arduino = serial.Serial(port,9600,timeout=5)
-time.sleep(2) # wait for Arduino
+arduino = serial.Serial(port,9600,timeout=None)
+time.sleep(10) # wait for Arduino
 
 i = 0
 
 readings = []
 
+oldDate = datetime.now()
+newDate = None
+
 while i < 5:
-    print(arduino.readline())
-    print(datetime.today())
-    i += 1
+    temp = arduino.readline()
+
+    if temp:
+        newDate = datetime.today()
+        print("Temperature", temp)
+        if oldDate.minute != newDate.minute:
+            print("Minute passed", readings)
+            oldDate = newDate
+            newDate = None
+            i += 1
+        else:
+            readings.append(temp)
     time.sleep(10)
