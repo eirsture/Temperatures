@@ -32,7 +32,8 @@ while i < 5:
             for reading in readings:
                 average += reading
             average = average/len(readings)
-            print("Minute passed" + " Average: " + average)
+            print("Minute passed")
+            print("Average: ", average)
             print("Readings: ", readings)
             readings = [newDate]
             oldDate = newDate
