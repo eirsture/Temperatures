@@ -35,7 +35,7 @@ while i < 5:
             print("Minute passed")
             print("Average: ", average)
             print("Readings: ", readings)
-            readings = [newDate]
+            readings = [temp]
             oldDate = newDate
             newDate = None
             i += 1
