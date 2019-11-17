@@ -22,7 +22,7 @@ oldDate = datetime.now()
 newDate = None
 
 while i < 5:
-    temp = arduino.readline().strip()
+    temp = float(arduino.readline().strip())
 
     if temp:
         newDate = datetime.today()
