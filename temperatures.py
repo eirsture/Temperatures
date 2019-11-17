@@ -22,10 +22,10 @@ oldDate = datetime.now()
 newDate = None
 
 while i < 5:
-    temp = arduino.readline()
+    temp = arduino.readline().strip()
 
     if temp:
-        newDate = datetime.today().strip()
+        newDate = datetime.today()
         print("Temperature", temp)
         if oldDate.minute != newDate.minute:
             print("Minute passed", readings)
