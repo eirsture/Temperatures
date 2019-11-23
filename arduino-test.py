@@ -14,9 +14,9 @@ i = 0
 oldDate = datetime.now()
 newDate = None
 
-while i < 5:
+while i < 10:
     temp = float(arduino.readline().strip())
     if temp:
         print(temp)
         i += 1;
-    time.sleep(10)
+    time.sleep(3)
