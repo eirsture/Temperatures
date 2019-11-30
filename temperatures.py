@@ -40,9 +40,9 @@ while i < 5:
             for reading in readings:
                 average += reading
             average = average/len(readings)
-            print("Minute passed")
-            print("Average: ", average)
-            print("Readings: ", readings)
+            #print("Minute passed")
+            #print("Average: ", average)
+            #print("Readings: ", readings)
             doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(average),
