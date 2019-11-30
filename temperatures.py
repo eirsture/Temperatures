@@ -29,7 +29,7 @@ readings = []
 oldDate = datetime.now()
 newDate = None
 
-while i < 5:
+while True:
     temp = float(arduino.readline().strip())
 
     if temp:
