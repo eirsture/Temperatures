@@ -45,7 +45,7 @@ while i < 5:
             print("Readings: ", readings)
             doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
-                u'temperature': u'{}'.format(temp),
+                u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
             readings = [temp]
