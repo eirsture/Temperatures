@@ -34,7 +34,7 @@ while True:
 
     if temp:
         newDate = datetime.today()
-        print("Temperature", temp)
+        #print("Temperature", temp)
         if oldDate.minute != newDate.minute:
             average = 0
             for reading in readings:
