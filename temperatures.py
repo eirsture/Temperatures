@@ -22,36 +22,33 @@ port = '/dev/ttyUSB0'
 arduino = serial.Serial(port,9600,timeout=None)
 time.sleep(10) # wait for Arduino
 
-i = 0
-
 readings = []
 
 oldDate = datetime.now()
 newDate = None
 
-while i < 5:
+while True:
     temp = float(arduino.readline().strip())
 
     if temp:
         newDate = datetime.today()
-        print("Temperature", temp)
+        #print("Temperature", temp)
         if oldDate.minute != newDate.minute:
             average = 0
             for reading in readings:
                 average += reading
             average = average/len(readings)
-            print("Minute passed")
-            print("Average: ", average)
-            print("Readings: ", readings)
+            #print("Minute passed")
+            #print("Average: ", average)
+            #print("Readings: ", readings)
             doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
-                u'temperature': u'{}'.format(temp),
+                u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
             readings = [temp]
             oldDate = newDate
             newDate = None
-            i += 1
         else:
             readings.append(temp)
     time.sleep(10)
