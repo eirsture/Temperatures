@@ -14,6 +14,7 @@ cred = credentials.Certificate("./serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 db = firestore.client()
+doc_ref = db.collection(u'temperatures').document()
 
 # The port that the arduino can be reached/read at
 port = '/dev/ttyUSB0'
@@ -23,6 +24,7 @@ arduino = serial.Serial(port,9600,timeout=None)
 time.sleep(10) # wait for Arduino
 
 readings = []
+push_to_database = []
 
 oldDate = datetime.now()
 newDate = None
@@ -30,25 +32,34 @@ newDate = None
 while True:
     temp = float(arduino.readline().strip())
 
-    if temp:
-        newDate = datetime.today()
-        #print("Temperature", temp)
-        if oldDate.minute != newDate.minute:
-            average = 0
-            for reading in readings:
-                average += reading
-            average = average/len(readings)
-            #print("Minute passed")
-            #print("Average: ", average)
-            #print("Readings: ", readings)
-            doc_ref = db.collection(u'temperatures').document()
+    newDate = datetime.today()
+    #print("Temperature", temp)
+    if ((newDate.minute-oldDate.minute>=15) or (60>60-oldDate.minute+newDate.minute>=15)):
+        average = 0
+        for reading in readings:
+            average += reading
+        average = average/len(readings)
+
+        try:
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
+        except:
+            push_to_database.append(average)
+        finally:
             readings = [temp]
             oldDate = newDate
             newDate = None
-        else:
-            readings.append(temp)
-    time.sleep(10)
+    elif (push_to_database):
+        for element in push_to_database:
+            try:
+                doc_ref.set({
+                    u'temperature': u'{0:.2f}'.format(element),
+                    u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
+                })
+            except:
+                push_to_database.append(average)
+    else:
+        readings.append(temp)
+    time.sleep(60)
