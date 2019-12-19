@@ -5,6 +5,7 @@ in a Cloud Firestore provided by Google Firebase.
 """
 
 import serial, time
+import asyncio
 from datetime import datetime
 
 import firebase_admin
@@ -32,6 +33,14 @@ newDate = None
 error_counter = 0
 iteration = 0
 
+
+async def save_to_database(temp):
+    return await doc_ref.set({
+                u'temperature': u'{0:.2f}'.format(temp),
+                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
+            })
+
+
 while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
@@ -43,10 +52,7 @@ while True:
         average = average/len(readings)
 
         try:
-            await doc_ref.set({
-                u'temperature': u'{0:.2f}'.format(average),
-                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
-            })
+            save_to_database(average)
         except:
             push_to_database.append(average)
         finally:
@@ -57,10 +63,7 @@ while True:
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
         try:
-            doc_ref.set({
-                u'temperature': u'{0:.2f}'.format(element),
-                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
-            })
+            save_to_database(element)
         except:
             error_counter += 1
             push_to_database.insert(0, element)
