@@ -35,7 +35,7 @@ iteration = 0
 
 
 async def save_to_database(temp):
-    return await doc_ref.set({
+    await doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(temp),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
@@ -52,7 +52,7 @@ while True:
         average = average/len(readings)
 
         try:
-            save_to_database(average)
+            await save_to_database(average)
         except:
             push_to_database.append(average)
         finally:
@@ -63,7 +63,7 @@ while True:
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
         try:
-            save_to_database(element)
+            await save_to_database(element)
         except:
             error_counter += 1
             push_to_database.insert(0, element)
