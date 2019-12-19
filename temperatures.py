@@ -48,6 +48,7 @@ while True:
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
         except:
+            print("Error when minute passed")
             push_to_database.append(average)
         finally:
             readings = [temp]
@@ -56,6 +57,7 @@ while True:
 
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
+        print("inside elif")
         try:
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(element),
