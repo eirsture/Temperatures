@@ -47,6 +47,7 @@ while True:
         average = average/len(readings)
         print('Minute passed: ', average)
         try:
+            doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
@@ -64,6 +65,7 @@ while True:
         element = push_to_database.pop()
         print("inside elif")
         try:
+            doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(element),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
