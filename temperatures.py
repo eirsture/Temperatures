@@ -37,24 +37,19 @@ iteration = 0
 while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
-    print("Date: ", newDate)
-    print("Temp: ", temp)
-    print("Readings: ", readings)
     if newDate.minute != oldDate.minute:
         average = 0
         for reading in readings:
             average += reading
         average = average/len(readings)
-        print('Minute passed: ', average)
         try:
             doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
-            print("Set")
         except:
-            print("Error when minute passed")
+            print("Error: ", average, oldDate)
             push_to_database.append(average)
         finally:
             readings = [temp]
@@ -63,7 +58,6 @@ while True:
 
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
-        print("inside elif")
         try:
             doc_ref = db.collection(u'temperatures').document()
             doc_ref.set({
