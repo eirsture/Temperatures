@@ -32,10 +32,12 @@ newDate = None
 error_counter = 0
 iteration = 0
 
+#(newDate.minute - oldDate.minute >= 15) or (60 > 60 - oldDate.minute + newDate.minute >= 15)
+
 while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
-    if (newDate.minute - oldDate.minute >= 15) or (60 > 60 - oldDate.minute + newDate.minute >= 15):
+    if newDate.minute != oldDate.minute:
         average = 0
         for reading in readings:
             average += reading
@@ -70,4 +72,4 @@ while True:
         else:
             iteration += 1
 
-    time.sleep(60)
+    time.sleep(10)
