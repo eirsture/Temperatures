@@ -36,7 +36,7 @@ while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
 
-    if ((newDate.minute-oldDate.minute>=15) or (60>60-oldDate.minute+newDate.minute>=15)):
+    if (newDate.minute - oldDate.minute >= 15) or (60 > 60 - oldDate.minute + newDate.minute >= 15):
         average = 0
         for reading in readings:
             average += reading
@@ -49,22 +49,26 @@ while True:
             })
         except:
             push_to_database.append(average)
-            error_counter += 1
         finally:
             readings = [temp]
             oldDate = newDate
             newDate = None
-            iteration, error_counter = 0
-    elif (push_to_database and iteration == 2**error_counter):
-        for element in push_to_database:
-            try:
-                doc_ref.set({
-                    u'temperature': u'{0:.2f}'.format(element),
-                    u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
-                })
-            except:
-                error_counter += 1
+
+    elif (push_to_database and iteration >= 2**error_counter):
+        element = push_to_database.pop()
+        try:
+            doc_ref.set({
+                u'temperature': u'{0:.2f}'.format(element),
+                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
+            })
+        except:
+            error_counter += 1
+            push_to_database.insert(0, element)
     else:
         readings.append(temp)
-        iteration += 1
+        if not push_to_database:
+            iteration, error_counter = 0
+        else:
+            iteration += 1
+
     time.sleep(60)
