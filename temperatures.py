@@ -45,11 +45,13 @@ while True:
         for reading in readings:
             average += reading
         average = average/len(readings)
+        print('Minute passed: ', average)
         try:
             doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
+            print("Set")
         except:
             print("Error when minute passed")
             push_to_database.append(average)
