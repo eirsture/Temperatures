@@ -52,7 +52,7 @@ while True:
         average = average/len(readings)
 
         try:
-            save_to_database(average)
+            asyncio.run(save_to_database(average))
         except:
             push_to_database.append(average)
         finally:
@@ -63,7 +63,7 @@ while True:
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
         try:
-            save_to_database(element)
+            asyncio.run(save_to_database(element))
         except:
             error_counter += 1
             push_to_database.insert(0, element)
