@@ -37,6 +37,9 @@ iteration = 0
 while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
+    print("Date: ", newDate)
+    print("Temp: ", temp)
+    print("Readings: ", readings)
     if newDate.minute != oldDate.minute:
         average = 0
         for reading in readings:
