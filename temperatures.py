@@ -39,20 +39,22 @@ async def save_to_database(temp):
                 u'temperature': u'{0:.2f}'.format(temp),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
+    print("awaited")
 
 #(newDate.minute - oldDate.minute >= 15) or (60 > 60 - oldDate.minute + newDate.minute >= 15)
 while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
-
+    print("temp : ", temp)
     if (newDate.minute != oldDate.minute):
         average = 0
         for reading in readings:
             average += reading
         average = average/len(readings)
-
+        print("differente minute reached, average: ", average)
         try:
-            await save_to_database(average)
+            asyncio.run(save_to_database(average))
+            print("after asyncio")
         except:
             push_to_database.append(average)
         finally:
@@ -62,8 +64,9 @@ while True:
 
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
+        print("elif error, should not be here")
         try:
-            await save_to_database(element)
+            asyncio.run(save_to_database(element))
         except:
             error_counter += 1
             push_to_database.insert(0, element)
