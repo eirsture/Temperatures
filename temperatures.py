@@ -43,7 +43,7 @@ while True:
         average = average/len(readings)
 
         try:
-            doc_ref.set({
+            await doc_ref.set({
                 u'temperature': u'{0:.2f}'.format(average),
                 u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
             })
