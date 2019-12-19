@@ -5,7 +5,6 @@ in a Cloud Firestore provided by Google Firebase.
 """
 
 import serial, time
-import asyncio
 from datetime import datetime
 
 import firebase_admin
@@ -33,28 +32,19 @@ newDate = None
 error_counter = 0
 iteration = 0
 
-
-async def save_to_database(temp):
-    await doc_ref.set({
-                u'temperature': u'{0:.2f}'.format(temp),
-                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
-            })
-    print("awaited")
-
-#(newDate.minute - oldDate.minute >= 15) or (60 > 60 - oldDate.minute + newDate.minute >= 15)
 while True:
     temp = float(arduino.readline().strip())
     newDate = datetime.today()
-    print("temp : ", temp)
-    if (newDate.minute != oldDate.minute):
+    if (newDate.minute - oldDate.minute >= 15) or (60 > 60 - oldDate.minute + newDate.minute >= 15):
         average = 0
         for reading in readings:
             average += reading
         average = average/len(readings)
-        print("differente minute reached, average: ", average)
         try:
-            asyncio.run(save_to_database(average))
-            print("after asyncio")
+            doc_ref.set({
+                u'temperature': u'{0:.2f}'.format(average),
+                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
+            })
         except:
             push_to_database.append(average)
         finally:
@@ -64,9 +54,11 @@ while True:
 
     elif (push_to_database and iteration >= 2**error_counter):
         element = push_to_database.pop()
-        print("elif error, should not be here")
         try:
-            asyncio.run(save_to_database(element))
+            doc_ref.set({
+                u'temperature': u'{0:.2f}'.format(element),
+                u'date': u'{}'.format(oldDate.strftime("%Y-%m-%d %H:%M"))
+            })
         except:
             error_counter += 1
             push_to_database.insert(0, element)
