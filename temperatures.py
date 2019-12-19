@@ -69,8 +69,9 @@ while True:
             push_to_database.insert(0, element)
     else:
         readings.append(temp)
-        if not push_to_database:
-            iteration, error_counter = 0
+        if not push_to_database and (iteration or error_counter):
+            iteration = 0
+            error_counter = 0
         else:
             iteration += 1
 
